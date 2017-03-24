@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassDiagram>
+    <Class name="fr.polytech.model.Mission" x="659" y="47">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association destinationClassName="fr.polytech.model.Client"
+            endpointName="client" kind="Simple"/>
+    </Class>
+    <Class name="fr.polytech.model.Client" x="633" y="251">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="fr.polytech.model.MissionPlanifiedReplanifiable"
+        x="-24" y="238">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Extension destinationClassName="fr.polytech.model.MissionPlanified"/>
+        <Communication destinationClassName="fr.polytech.model.MissionPlanified"/>
+    </Class>
+    <Class name="fr.polytech.model.Planning" x="364" y="14">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="fr.polytech.model.MissionPlanified"
+            endpointName="missionPlanifiedsList" kind="Simple"/>
+    </Class>
+    <Class name="fr.polytech.model.MissionPlanified" x="306" y="189">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association destinationClassName="fr.polytech.model.Ressource"
+            endpointName="ressource" kind="Simple"/>
+        <Association destinationClassName="fr.polytech.model.Client"
+            endpointName="client" kind="Simple"/>
+        <Communication destinationClassName="fr.polytech.model.Client"/>
+        <Communication destinationClassName="fr.polytech.model.Ressource"/>
+    </Class>
+    <Class name="fr.polytech.model.Ressource" x="171" y="461">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+</ClassDiagram>

@@ -22,16 +22,17 @@ public class TestSimple {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		HashMap<Integer, Client> clientsList=new HashMap<Integer,Client>();
-		HashMap<Integer, Ressource> ressourcesMap=new HashMap<Integer,Ressource>();
+		List<Client> clientsList = new ArrayList<Client>();
+	    List<Ressource> ressourcesList = new ArrayList<Ressource>();
 		DataLoad dataLoad=new DataLoad();
-		clientsList=dataLoad.getClientsMap();
-		ressourcesMap=dataLoad.getRessourcesMap();
+		clientsList=dataLoad.getClientsList();
+		ressourcesList=dataLoad.getRessourcesList();
 		Planning planning=new Planning();
 		planning.setMissionPlanifiedsList(dataLoad.getMissionsPlanifiedList());
-		dataLoad.loadAllRessourcesDailyInfo(ressourcesMap);
+		dataLoad.loadInfo(ressourcesList,planning);
+		
 		System.out.print("Sum of distance of this planning: ");
-		System.out.println(dataLoad.getSumPlanningDistance());
+		System.out.println(planning.getSumCost());
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date dateStart=new Date();
 		Date dateEnd=new Date();
@@ -46,9 +47,7 @@ public class TestSimple {
 		Mission newmission=new Mission(clientsList.get(42), "plombier", dateStart, dateEnd, 80);
 		System.out.println(newmission.toString());
 		MethodSimple methodSimple=new MethodSimple();
-		methodSimple.Calculate(planning, newmission,ressourcesMap);
-		dataLoad.setSumPlanningDistance(ressourcesMap);
-		
+		methodSimple.Calculate(planning, newmission,ressourcesList);
 //		
 //		System.out.println("New Mission list:");
 //		Iterator<Integer> iterator1=ressourcesMap.keySet().iterator();
@@ -66,7 +65,7 @@ public class TestSimple {
 //		}
 		
 		System.out.print("Sum of distance of this planning: ");
-		System.out.println(dataLoad.getSumPlanningDistance());
+		System.out.println(planning.getSumCost());
 		
 	}
 

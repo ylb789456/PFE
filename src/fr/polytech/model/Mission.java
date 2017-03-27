@@ -64,7 +64,7 @@ public class Mission {
 	@Override
 	public String toString() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		return "Mission [client=" + client + ", typeRessource=" + typeRessource + ", dateStart=" + sdf.format(dateStart)
+		return "Mission [client=" + client.getId() + ", typeRessource=" + typeRessource + ", dateStart=" + sdf.format(dateStart)
 				+ ", dateEnd=" + sdf.format(dateEnd) + ", duration=" + duration + "]";
 	}
 	

@@ -22,12 +22,7 @@ public class Ressource implements Serializable {
 	private List<MissionPlanified> MissionReplanList;
 	private double cost;
 	
-	public HashMap<Date, ArrayList<MissionPlanified>> getMisssionListDaily() {
-		return planningDailyPerson;
-	}
-	public void setMisssionListDaily(HashMap<Date, ArrayList<MissionPlanified>> planningDailyPerson) {
-		this.planningDailyPerson = planningDailyPerson;
-	}
+	
 	public int getId() {
 		return id;
 	}
@@ -71,6 +66,7 @@ public class Ressource implements Serializable {
 	public void setTravelDistanceDaily(HashMap<Date, Double> travelDistanceDaily) {
 		this.travelDistanceDaily = travelDistanceDaily;
 	}
+	
 	public HashMap<Date, ArrayList<MissionPlanified>> getPlanningDailyPerson() {
 		return planningDailyPerson;
 	}
@@ -102,6 +98,7 @@ public class Ressource implements Serializable {
 		}
 	}
 	
+	//add mission planified in the planningDaily of this Ressource,and if it is replanifiable,add it in the MissionReplanList
 	public void addMissionPlanified(MissionPlanified missionPlanified){
 		if(planningDailyPerson==null){
 			planningDailyPerson=new HashMap<Date,ArrayList<MissionPlanified>>();
@@ -114,6 +111,9 @@ public class Ressource implements Serializable {
 		}
 		else{
 			planningDailyPerson.get(missionPlanified.getDate()).add(missionPlanified);
+		}
+		if(missionPlanified.isReplanifiable()){
+			addMissionReplan(missionPlanified);
 		}
 	}
 	

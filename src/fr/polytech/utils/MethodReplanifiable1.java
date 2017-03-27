@@ -15,15 +15,14 @@ import fr.polytech.model.Ressource;
 public class MethodReplanifiable1 extends CommonCalculateMethod{
 	
 	@SuppressWarnings("unchecked")
-	public void Calculate(Planning planning,Mission mission,HashMap<Integer, Ressource> ressourcesMap){
+	public void Calculate(Planning planning,Mission mission,List<Ressource> ressourcesList){
 		
-		Iterator<Integer> iterator1=ressourcesMap.keySet().iterator();
+		Iterator<Ressource> iterator1=ressourcesList.iterator();
 		List<Ressource> ressourcesObjetList=new ArrayList<Ressource>();
 		
 		// Get the Ressource equal to the type of mission.
 		while(iterator1.hasNext()){
-			int key=iterator1.next();
-			Ressource r=ressourcesMap.get(key);
+			Ressource r=iterator1.next();
 			if(mission.getTypeRessource().equals(r.getType())){
 				ressourcesObjetList.add(r);
 			}
@@ -33,7 +32,7 @@ public class MethodReplanifiable1 extends CommonCalculateMethod{
 		double min=999999999;
 		HashMap<Date, ArrayList<MissionPlanified>> finalSolution=new HashMap<Date, ArrayList<MissionPlanified>>();
 		HashMap<Date, Double> finalTDD=new HashMap<Date, Double>();
-		HashMap<Date, ArrayList<MissionPlanified>> finalMRL=new HashMap<Date, ArrayList<MissionPlanified>>();
+		List<MissionPlanified> finalMRL=new ArrayList<MissionPlanified>();
 		Ressource finalRessource=new Ressource();
 		//Foreach ressource 
 		while(iterator2.hasNext()){
@@ -43,8 +42,8 @@ public class MethodReplanifiable1 extends CommonCalculateMethod{
 			//HashMap<Date, Double> tDD_NPL=new HashMap<Date, Double>(r.getTravelDistanceDaily());
 			HashMap<Date, ArrayList<MissionPlanified>> NPL=(HashMap<Date, ArrayList<MissionPlanified>>) deepClone(r.getPlanningDailyPerson());
 			//HashMap<Date, ArrayList<MissionPlanified>> NPL=new HashMap<Date,ArrayList<MissionPlanified>>(r.getPlanningDailyPerson());			
-			
-			
+			double costRessource=calculateRessourceCost(tDD_NPL);
+			//System.out.println("Cost before insert mission:"+costRessource);
 			//First, insert mission as the method simple
 			HashMap<Double, MissionPlanified> solutionMap1=new HashMap<Double,MissionPlanified>();
 			calculateRessourceSolutionsList(mission, r,NPL,solutionMap1,planning.getMissionPlanifiedsList().size()+1);
@@ -64,62 +63,59 @@ public class MethodReplanifiable1 extends CommonCalculateMethod{
 			HashMap<Date, Double> tDD_BS=(HashMap<Date, Double>) deepClone(tDD_NPL);
 			//HashMap<Date, Double> tDD_BS=new HashMap<Date, Double>(tDD_NPL);
 			double costNPL=calculateRessourceCost(tDD_NPL);
-			System.out.println("objectMissionPlanified:"+objectMissionPlanified);
-			System.out.println("Cost after inser mission object:"+costNPL);
+			//System.out.println("objectMissionPlanified:"+objectMissionPlanified);
+			//System.out.println("Cost after inser mission object:"+costNPL);
 			double costBS=costNPL; 
 			//deepClone
-			HashMap<Date, ArrayList<MissionPlanified>> missionReplanMap=(HashMap<Date, ArrayList<MissionPlanified>>) deepClone(r.getMissionReplanMap());
+			ArrayList<MissionPlanified> missionReplanList=(ArrayList<MissionPlanified>) deepClone(r.getMissionReplanList());
 			
 			//List<MissionPlanified> missionReplanList=new ArrayList<MissionPlanified>(r.getMissionReplanList());
-			addMissionPlanified(objectMissionPlanified, missionReplanMap);
+			missionReplanList.add(objectMissionPlanified);
 			boolean flag=true;
+			//交换 循环
+			switchInMissionReplanList(missionReplanList,BS,tDD_BS);
+			costBS=calculateRessourceCost(tDD_BS);
+			//System.out.println("After switch循环 cost="+costBS);
+			//插入 循环
 			do{
-				Iterator<Date> iterator3=missionReplanMap.keySet().iterator();
+				Iterator<MissionPlanified> iterator3=missionReplanList.iterator();
 				while(iterator3.hasNext()){
-					Date key=iterator3.next();
-					List<MissionPlanified> missionReplanDailyList=missionReplanMap.get(key);
-					if(missionReplanDailyList.size()>1){
-						//增加switch 方法    交换两个的位置，看cost是否变小，变小就。。
+					MissionPlanified missionPlanified=iterator3.next();
+					HashMap<Date, ArrayList<MissionPlanified>> solutionPlan=(HashMap<Date, ArrayList<MissionPlanified>>) deepClone(BS);
+					//HashMap<Date, ArrayList<MissionPlanified>> solutionPlan=new HashMap<Date,ArrayList<MissionPlanified>>(BS);
+					Mission MRP=new Mission(missionPlanified.getClient(), missionPlanified.getRessource().getType(), 
+							missionPlanified.getTimeReplanEarliest(), missionPlanified.getTimeReplanLatest(), 
+							missionPlanified.getTimeEndWork()-missionPlanified.getTimeStartWork());
+					deleteMissionPlanified(missionPlanified, solutionPlan);
+					//System.out.println(BS);
+					sortPlanDaily(solutionPlan.get(missionPlanified.getDate()));
+					HashMap<Double, MissionPlanified> solutionMap2=new HashMap<Double,MissionPlanified>();
+					calculateRessourceSolutionsList(MRP, r,solutionPlan,solutionMap2,missionPlanified.getId());
+					MissionPlanified bestSolution=solutionMap2.get(minTravelTimeofSolutions(solutionMap2));
+					
+					if(bestSolution!=null){
+						addMissionPlanified(bestSolution, solutionPlan);
+						sortPlanDaily(solutionPlan.get(bestSolution.getDate()));
 						
-					}
-					Iterator<MissionPlanified> iterator4=missionReplanDailyList.iterator();
-					while(iterator4.hasNext()){
-						MissionPlanified missionPlanified=iterator4.next();
-						HashMap<Date, ArrayList<MissionPlanified>> solutionPlan=(HashMap<Date, ArrayList<MissionPlanified>>) deepClone(BS);
-						//HashMap<Date, ArrayList<MissionPlanified>> solutionPlan=new HashMap<Date,ArrayList<MissionPlanified>>(BS);
-						Mission MRP=new Mission(missionPlanified.getClient(), missionPlanified.getRessource().getType(), 
-								missionPlanified.getTimeReplanEarliest(), missionPlanified.getTimeReplanLatest(), 
-								missionPlanified.getTimeEndWork()-missionPlanified.getTimeStartWork());
-						deleteMissionPlanified(missionPlanified, solutionPlan);
-						//System.out.println(BS);
-						sortPlanDaily(solutionPlan.get(missionPlanified.getDate()));
-						HashMap<Double, MissionPlanified> solutionMap2=new HashMap<Double,MissionPlanified>();
-						calculateRessourceSolutionsList(MRP, r,solutionPlan,solutionMap2,missionPlanified.getId());
-						MissionPlanified bestSolution=solutionMap2.get(minTravelTimeofSolutions(solutionMap2));
-						
-						if(bestSolution!=null){
-							addMissionPlanified(bestSolution, solutionPlan);
-							sortPlanDaily(solutionPlan.get(bestSolution.getDate()));
-							
+						//deepClone
+						HashMap<Date, Double> temptDD=(HashMap<Date, Double>) deepClone(tDD_BS);
+						//HashMap<Date, Double> temptDD=new HashMap<Date, Double>(tDD_BS);
+						temptDD.put(bestSolution.getDate(), calculateDistanceDaily(solutionPlan.get(bestSolution.getDate())));
+						double costS=calculateRessourceCost(temptDD);
+						//System.out.println("Cost of this Solution:"+costS);
+						if(costS<costBS){
 							//deepClone
-							HashMap<Date, Double> temptDD=(HashMap<Date, Double>) deepClone(tDD_BS);
-							//HashMap<Date, Double> temptDD=new HashMap<Date, Double>(tDD_BS);
-							temptDD.put(bestSolution.getDate(), calculateDistanceDaily(solutionPlan.get(bestSolution.getDate())));
-							double costS=calculateRessourceCost(temptDD);
-							System.out.println("Cost of this Solution:"+costS);
-							if(costS<costBS){
-								//deepClone
-								BS=(HashMap<Date, ArrayList<MissionPlanified>>) deepClone(solutionPlan);
-								//BS=new HashMap<Date,ArrayList<MissionPlanified>>(solutionPlan);
-								tDD_BS=(HashMap<Date, Double>) deepClone(temptDD);
-								//tDD_BS=new HashMap<Date, Double>(temptDD);
-								costBS=costS;
-							}
+							BS=(HashMap<Date, ArrayList<MissionPlanified>>) deepClone(solutionPlan);
+							//BS=new HashMap<Date,ArrayList<MissionPlanified>>(solutionPlan);
+							tDD_BS=(HashMap<Date, Double>) deepClone(temptDD);
+							//tDD_BS=new HashMap<Date, Double>(temptDD);
+							costBS=costS;
 						}
 					}
+				}
 					//deepClone
 					
-				}
+				
 				if(costBS<costNPL){
 					//deepClone
 					NPL=(HashMap<Date, ArrayList<MissionPlanified>>) deepClone(BS);
@@ -131,26 +127,41 @@ public class MethodReplanifiable1 extends CommonCalculateMethod{
 				}
 				flag=false;
 			}while(flag);
-			
-			if(costNPL<min){
-				min=costNPL;
+			//System.out.println("The extraTime after insert:"+(costNPL-costRessource));
+			if(costNPL-costRessource<min){
+				min=costNPL-costRessource;
 				//deepClone
 				finalSolution=(HashMap<Date, ArrayList<MissionPlanified>>) deepClone(NPL);
 				//finalSolution=new HashMap<Date,ArrayList<MissionPlanified>>(NPL);
 				finalTDD=(HashMap<Date, Double>) deepClone(tDD_NPL);
 				//finalTDD=new HashMap<Date, Double>(tDD_NPL);
-				finalMRL=(HashMap<Date, ArrayList<MissionPlanified>>) deepClone(missionReplanMap);
+				finalMRL=(ArrayList<MissionPlanified>) deepClone(missionReplanList);
 				//finalMRL=new ArrayList<MissionPlanified>(missionReplanList);
 				finalRessource=r;
 			}
 			
 		}
-		finalRessource.setMisssionListDaily(finalSolution);
+		finalRessource.setPlanningDailyPerson(finalSolution);
 		finalRessource.setTravelDistanceDaily(finalTDD);
-		finalRessource.setMissionReplanMap(finalMRL);
-		finalRessource.setCost(min);
+		finalRessource.setMissionReplanList(finalMRL);
+		finalRessource.setCost(calculateRessourceCost(finalRessource.getTravelDistanceDaily()));
+		List<MissionPlanified> missionPlanifiedsList=new ArrayList<MissionPlanified>();
+		Iterator<Ressource> iteratorT=ressourcesList.iterator();
+		while(iteratorT.hasNext()){
+			Ressource r=iteratorT.next();
+			Iterator<Date> iteratorD=r.getPlanningDailyPerson().keySet().iterator();
+			while(iteratorD.hasNext()){
+				Date date=iteratorD.next();
+				Iterator<MissionPlanified> iteratorM=r.getPlanningDailyPerson().get(date).iterator();
+				while(iteratorM.hasNext()){
+					missionPlanifiedsList.add(iteratorM.next());
+				}
+			}
+		}
+		planning.setMissionPlanifiedsList(missionPlanifiedsList);
+		planning.setSumCost(calculateSumPlanningDistance(ressourcesList));
+		
 	}
-	
 	
 	
 }

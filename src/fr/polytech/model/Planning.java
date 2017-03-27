@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Planning {
 	private List<MissionPlanified> missionPlanifiedsList;
+	private double sumCost;
 	
 	public Planning() {
 		// TODO Auto-generated constructor stub
@@ -19,6 +20,14 @@ public class Planning {
 		this.missionPlanifiedsList = missionPlanifiedsList;
 	}
 	
+	public double getSumCost() {
+		return sumCost;
+	}
+
+	public void setSumCost(double sumCost) {
+		this.sumCost = sumCost;
+	}
+
 	public void addMission(MissionPlanified missionPlanified){
 		missionPlanifiedsList.add(missionPlanified);
 	}

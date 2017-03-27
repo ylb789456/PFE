@@ -13,25 +13,17 @@ import java.util.List;
 
 import fr.polytech.model.Client;
 import fr.polytech.model.MissionPlanified;
+import fr.polytech.model.Planning;
 import fr.polytech.model.Ressource;
 
 public class DataLoad extends CommonCalculateMethod{
 	private Connection conn;
     private PreparedStatement ps;
     private ResultSet rs;
-	private HashMap<Integer,Client> clientsMap = new HashMap<Integer,Client>();
-    private HashMap<Integer,Ressource> ressourcesMap = new HashMap<Integer,Ressource>();
+	private List<Client> clientsList = new ArrayList<Client>();
+    private List<Ressource> ressourcesList = new ArrayList<Ressource>();
     private List<MissionPlanified> missionPlanifiedsList = new ArrayList<MissionPlanified>();
-    private double sumPlanningDistance;
     
-    public double getSumPlanningDistance() {
-		return sumPlanningDistance;
-	}
-
-	public void setSumPlanningDistance(double sumPlanningDistance) {
-		this.sumPlanningDistance = sumPlanningDistance;
-	}
-
 	public Connection getConnection(){
         String url="jdbc:mysql://localhost:3306/pfe";
         String userName="root";
@@ -56,7 +48,7 @@ public class DataLoad extends CommonCalculateMethod{
         return conn;
     }
 	
-    public HashMap<Integer,Client> getClientsMap(){
+    public List<Client> getClientsList(){
         Client client;
         String sql="select * from client";
         try {
@@ -69,7 +61,7 @@ public class DataLoad extends CommonCalculateMethod{
                 client.setName(rs.getString("Name"));
                 client.setxCoordinate(rs.getFloat("xCoordinate"));
                 client.setyCoordinate(rs.getFloat("yCoordinate"));
-                clientsMap.put(client.getId(),client);
+                clientsList.add(client);
                 System.out.println(client.toString());
             }           
         } catch (SQLException e) {
@@ -84,10 +76,10 @@ public class DataLoad extends CommonCalculateMethod{
             }
         }
         System.out.println("Load clients successful");
-		return clientsMap;
+		return clientsList;
     }
     
-    public HashMap<Integer,Ressource> getRessourcesMap() {
+    public List<Ressource> getRessourcesList() {
         Ressource ressource;
         String sql="select * from ressource";
         try {
@@ -102,7 +94,7 @@ public class DataLoad extends CommonCalculateMethod{
             	ressource.setTimeStartWork(rs.getInt("TimeStartWork"));
             	ressource.setTimeEndWork(rs.getInt("TimeEndWork"));
             	ressource.setTimeMaxWork(rs.getInt("TimeMaxWork"));
-            	ressourcesMap.put(ressource.getId(),ressource); 
+            	ressourcesList.add(ressource); 
                 System.out.println(ressource.toString());
             }           
         } catch (SQLException e) {
@@ -117,7 +109,7 @@ public class DataLoad extends CommonCalculateMethod{
             }
         }
         System.out.println("Load ressources successful");
-		return ressourcesMap;
+		return ressourcesList;
 	}
     
     public List<MissionPlanified> getMissionsPlanifiedList() {
@@ -134,10 +126,8 @@ public class DataLoad extends CommonCalculateMethod{
             	missionPlanified.setReplanifiable(rs.getBoolean("Replanificable"));
             	missionPlanified.setTimeStartWork(rs.getInt("TimeStartWork"));
             	missionPlanified.setTimeEndWork(rs.getInt("TimeEndWork"));
-            	int idClient=rs.getInt("idClient");
-            	int idRessource=rs.getInt("idRessource");
-            	missionPlanified.setClient(clientsMap.get(rs.getInt("idClient")));
-            	missionPlanified.setRessource(ressourcesMap.get(rs.getInt("idRessource")));
+            	missionPlanified.setClient(findClientById(rs.getInt("idClient")));
+            	missionPlanified.setRessource(findRessourceById(rs.getInt("idRessource")));
             	if(missionPlanified.isReplanifiable()){
             		missionPlanified.setTimeReplanEarliest(rs.getTimestamp("timeReplanEarliest"));
             		missionPlanified.setTimeReplanLatest(rs.getTimestamp("timeReplanLatest"));
@@ -161,49 +151,55 @@ public class DataLoad extends CommonCalculateMethod{
 		return missionPlanifiedsList;
 	}
     
+    //find Client by id
+    public Client findClientById(int idClient){
+    	Iterator<Client> iterator=clientsList.iterator();
+    	while(iterator.hasNext()){
+    		Client client=iterator.next();
+    		if(client.getId()==idClient)	
+    			return client;
+    	}
+    	return null;
+    }
+    
+    //find Ressource by id
+    public Ressource findRessourceById(int idRessource){
+    	Iterator<Ressource> iterator=ressourcesList.iterator();
+    	while(iterator.hasNext()){
+    		Ressource ressource=iterator.next();
+    		if(ressource.getId()==idRessource)	
+    			return ressource;
+    	}
+    	return null;
+    }
 
-	//load the infomation of the ressources
-	public void loadAllRessourcesDailyInfo(HashMap<Integer, Ressource> ressourcesMap){
-		sumPlanningDistance=0.0;
-		Iterator<Integer> iterator1=ressourcesMap.keySet().iterator();
+	//load the infomation of the ressources and load the sumCost of the Plan
+	public void loadInfo(List<Ressource> ressourcesList,Planning planning){
+		double sumPlanningDistance=0.0;
+		Iterator<Ressource> iterator1=ressourcesList.iterator();
 		while(iterator1.hasNext()){
-			int key1=iterator1.next();
-			Ressource r=ressourcesMap.get(key1);
+			Ressource r=iterator1.next();
 			Iterator<MissionPlanified> iterator2=missionPlanifiedsList.iterator();
 			while(iterator2.hasNext()){
 				MissionPlanified missionPlanified=iterator2.next();
 				if(r.getId()==missionPlanified.getRessource().getId()){
 					r.addMissionPlanified(missionPlanified);
-					//add missionPlanified in the list of missionReplan(prepare for the methods replanifiable)
-					if(missionPlanified.isReplanifiable()){
-						r.addMissionReplan(missionPlanified);
-					}
 				}
 			}
 			sortPlan(r.getPlanningDailyPerson());
-			Iterator<Date> iterator3=r.getMisssionListDaily().keySet().iterator();
+			Iterator<Date> iterator3=r.getPlanningDailyPerson().keySet().iterator();
 			while(iterator3.hasNext()){
 				Date key2=iterator3.next();
-				r.setTravelDistanceDaily(key2, calculateDistanceDaily(r.getMisssionListDaily().get(key2)));
-				sumPlanningDistance+=r.getTravelDistanceDaily().get(key2);
+				r.setTravelDistanceDaily(key2, calculateDistanceDaily(r.getPlanningDailyPerson().get(key2)));
 			}
+			r.setCost(calculateRessourceCost(r.getTravelDistanceDaily()));
+			sumPlanningDistance+=r.getCost();
 		}
+		planning.setSumCost(sumPlanningDistance);
 	}
-    
-	// get the sum of the cost of all ressources
-    public void setSumPlanningDistance(HashMap<Integer,Ressource> ressourcesMap){
-    	Iterator<Integer> iterator1=ressourcesMap.keySet().iterator();
-    	double sum=0.0;
-		while(iterator1.hasNext()){
-			int key1=iterator1.next();
-			Iterator<Date> iterator2=ressourcesMap.get(key1).getMisssionListDaily().keySet().iterator();
-			while(iterator2.hasNext()){
-				Date key2=iterator2.next();
-				sum+=ressourcesMap.get(key1).getTravelDistanceDaily().get(key2);
-			}
-		}
-		sumPlanningDistance=sum;
-    }
+
+
+
     
     		
 }

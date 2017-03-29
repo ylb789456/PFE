@@ -12,41 +12,44 @@ import fr.polytech.model.Client;
 import fr.polytech.model.Mission;
 import fr.polytech.model.MissionPlanified;
 import fr.polytech.model.Planning;
-import fr.polytech.model.Ressource;
+import fr.polytech.model.Resource;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MethodSimple.Calculate for the problem unreplanifiable.
+ *
+ * @author Yang Lingbo
+ */
 public class MethodSimple extends CommonCalculateMethod {
 	
 	
-	public void Calculate(Planning planning,Mission mission,List<Ressource> ressourcesList){
+	/**
+	 * Insert the mission in the planning(No changes of the missions planified),calculate the solutions of all 
+	 * resources matched the type, and get the best solution,and replace the planning.
+	 *
+	 * @param planning the planning
+	 * @param mission the mission
+	 * @param resourcesList the resources list
+	 */
+	public void Calculate(Planning planning,Mission mission,List<Resource> resourcesList){
 		List<MissionPlanified> missionPlanifiedsList=planning.getMissionPlanifiedsList();
-		Iterator<Ressource> iterator1=ressourcesList.iterator();
-		List<Ressource> ressourcesObjetList=new ArrayList<Ressource>();
+		Iterator<Resource> iterator1=resourcesList.iterator();
+		List<Resource> resourcesObjetList=new ArrayList<Resource>();
 		
-		// Get the Ressource equal to the type of mission.
+		// Get the resource equal to the type of mission.
 		while(iterator1.hasNext()){
-			Ressource r=iterator1.next();
-			if(mission.getTypeRessource().equals(r.getType())){
-				ressourcesObjetList.add(r);
+			Resource r=iterator1.next();
+			if(mission.getTypeResource().equals(r.getType())){
+				resourcesObjetList.add(r);
 			}
 		}
 			
-		
-//	for(int i=0;i<ressourcesObjetList.size();i++){
-//		System.out.println(ressourcesObjetList.get(i).toString());
-//		ressourcesObjetList.get(i).sortPlan();
-//		HashMap<Date, ArrayList<MissionPlanified>> missionPlanifiedsMap=ressourcesObjetList.get(i).getMisssionListDaily();
-//		Iterator<Date> iterator=missionPlanifiedsMap.keySet().iterator();
-//		while(iterator.hasNext()){
-//			Date key=iterator.next();
-//			for(int j=0;j<missionPlanifiedsMap.get(key).size();j++)
-//				System.out.println(missionPlanifiedsMap.get(key).get(j).toString());
-//		}
-//	}
 		HashMap<Double, MissionPlanified> solutionMap=new HashMap<Double,MissionPlanified>();
-		//foreach ressourceslist
-		for(int i=0;i<ressourcesObjetList.size();i++){
-			Ressource ressource=ressourcesObjetList.get(i);
-			calculateRessourceSolutionsList(mission,ressource,ressource.getPlanningDailyPerson(),solutionMap,missionPlanifiedsList.size()+1);
+		//foreach resourceslist
+		for(int i=0;i<resourcesObjetList.size();i++){
+			Resource resource=resourcesObjetList.get(i);
+			if(resource.getPlanningDailyPerson()!=null)
+				calculateResourceSolutionsList(mission,resource,resource.getPlanningDailyPerson(),solutionMap,missionPlanifiedsList.size()+1);
 		}
 		System.out.println("All solutions:");
 		Iterator<Double> iteratorE=solutionMap.keySet().iterator();
@@ -61,13 +64,13 @@ public class MethodSimple extends CommonCalculateMethod {
 			System.exit(0);
 		}
 		planning.addMission(bestSolution);
-		Ressource ressourceAddMission=bestSolution.getRessource();
-		ressourceAddMission.addMissionPlanified(bestSolution);
-		sortPlanDaily(ressourceAddMission.getPlanningDailyPerson().get(bestSolution.getDate()));
-		ressourceAddMission.setTravelDistanceDaily(bestSolution.getDate(),
-				calculateDistanceDaily(ressourceAddMission.getPlanningDailyPerson().get(bestSolution.getDate())));
-		ressourceAddMission.setCost(calculateRessourceCost(ressourceAddMission.getTravelDistanceDaily()));
-		planning.setSumCost(calculateSumPlanningDistance(ressourcesList));
+		Resource resourceAddMission=bestSolution.getresource();
+		resourceAddMission.addMissionPlanified(bestSolution);
+		sortPlanDaily(resourceAddMission.getPlanningDailyPerson().get(bestSolution.getDate()));
+		resourceAddMission.setTravelDistanceDaily(bestSolution.getDate(),
+				calculateDistanceDaily(resourceAddMission.getPlanningDailyPerson().get(bestSolution.getDate())));
+		resourceAddMission.setCost(calculateResourceCost(resourceAddMission.getTravelDistanceDaily()));
+		planning.setSumCost(calculateSumPlanningDistance(resourcesList));
 		System.out.println("The best Solution:");
 		System.out.println(bestSolution);
 	}

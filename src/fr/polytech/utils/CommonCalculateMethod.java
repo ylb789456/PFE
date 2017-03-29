@@ -83,6 +83,7 @@ public class CommonCalculateMethod {
 	 * @param d2 the d 2
 	 * @return boolean
 	 */
+	@SuppressWarnings("deprecation")
 	public boolean inSameDay(Date d1, Date d2) {
 		return (d1.getYear() == d2.getYear() && d1.getMonth() == d2.getMonth() && d1.getDate() == d2.getDate());
 	}

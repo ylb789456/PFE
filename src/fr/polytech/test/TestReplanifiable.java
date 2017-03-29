@@ -63,10 +63,10 @@ public class TestReplanifiable {
 		long endTime = System.currentTimeMillis();
 		System.out.println("------------------------------------------------------------------------------------");
 		System.out.println("The Mission List after insert:");
-//		Iterator<MissionPlanified> iterator=planning.getMissionPlanifiedsList().iterator();
-//		while(iterator.hasNext()){
-//			System.out.println(iterator.next().toString());
-//		}
+		Iterator<MissionPlanified> iterator=planning.getMissionPlanifiedsList().iterator();
+		while(iterator.hasNext()){
+			System.out.println(iterator.next().toString());
+		}
 		System.out.print("Sum of distance of this planning after insert this mission: ");
 		System.out.println(planning.getSumCost());
 		System.out.println("Time cost of replanifiable method:"+(endTime-startTime)+" ms");

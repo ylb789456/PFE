@@ -56,12 +56,10 @@ public class MethodReplanifiable extends CommonCalculateMethod{
 			}
 			// deepClone
 			HashMap<Date, Double> tDD_NPL = (HashMap<Date, Double>) deepClone(r.getTravelDistanceDaily());
-			// HashMap<Date, Double> tDD_NPL=new HashMap<Date,
-			// Double>(r.getTravelDistanceDaily());
+			
 			HashMap<Date, ArrayList<MissionPlanified>> NPL = (HashMap<Date, ArrayList<MissionPlanified>>) deepClone(
 					r.getPlanningDailyPerson());
-			// HashMap<Date, ArrayList<MissionPlanified>> NPL=new
-			// HashMap<Date,ArrayList<MissionPlanified>>(r.getPlanningDailyPerson());
+		
 			double costResource = calculateResourceCost(tDD_NPL);
 			// System.out.println("Cost before insert mission:"+costResource);
 			// First, insert mission as the method simple
@@ -76,15 +74,14 @@ public class MethodReplanifiable extends CommonCalculateMethod{
 			sortPlanDaily(NPL.get(objectMissionPlanified.getDate()));
 
 			// deepClone
-			// HashMap<Date, ArrayList<MissionPlanified>> BS=new
-			// HashMap<Date,ArrayList<MissionPlanified>>(NPL);
+		
 
 			HashMap<Date, ArrayList<MissionPlanified>> BS = (HashMap<Date, ArrayList<MissionPlanified>>) deepClone(NPL);
 			tDD_NPL.put(objectMissionPlanified.getDate(),
 					calculateDistanceDaily(NPL.get(objectMissionPlanified.getDate())));
 			// deepClone
 			HashMap<Date, Double> tDD_BS = (HashMap<Date, Double>) deepClone(tDD_NPL);
-			// HashMap<Date, Double> tDD_BS=new HashMap<Date, Double>(tDD_NPL);
+			
 			double costNPL = calculateResourceCost(tDD_NPL);
 			// System.out.println("objectMissionPlanified:"+objectMissionPlanified);
 			// System.out.println("Cost after insert mission object:"+costNPL);
@@ -106,9 +103,7 @@ public class MethodReplanifiable extends CommonCalculateMethod{
 					MissionPlanified missionPlanified = iterator3.next();
 					HashMap<Date, ArrayList<MissionPlanified>> solutionPlan = (HashMap<Date, ArrayList<MissionPlanified>>) deepClone(
 							BS);
-					// HashMap<Date, ArrayList<MissionPlanified>>
-					// solutionPlan=new
-					// HashMap<Date,ArrayList<MissionPlanified>>(BS);
+					
 					Mission MRP = new Mission(missionPlanified.getClient(), missionPlanified.getresource().getType(),
 							missionPlanified.getTimeReplanEarliest(), missionPlanified.getTimeReplanLatest(),
 							missionPlanified.getTimeEndWork() - missionPlanified.getTimeStartWork());
@@ -125,8 +120,7 @@ public class MethodReplanifiable extends CommonCalculateMethod{
 
 						// deepClone
 						HashMap<Date, Double> temptDD = (HashMap<Date, Double>) deepClone(tDD_BS);
-						// HashMap<Date, Double> temptDD=new HashMap<Date,
-						// Double>(tDD_BS);
+						
 						temptDD.put(bestSolution.getDate(),
 								calculateDistanceDaily(solutionPlan.get(bestSolution.getDate())));
 						double costS = calculateResourceCost(temptDD);
@@ -134,10 +128,9 @@ public class MethodReplanifiable extends CommonCalculateMethod{
 						if (costS < costBS) {
 							// deepClone
 							BS = (HashMap<Date, ArrayList<MissionPlanified>>) deepClone(solutionPlan);
-							// BS=new
-							// HashMap<Date,ArrayList<MissionPlanified>>(solutionPlan);
+							
 							tDD_BS = (HashMap<Date, Double>) deepClone(temptDD);
-							// tDD_BS=new HashMap<Date, Double>(temptDD);
+							
 							costBS = costS;
 						}
 					}
@@ -147,9 +140,9 @@ public class MethodReplanifiable extends CommonCalculateMethod{
 				if (costBS < costNPL) {
 					// deepClone
 					NPL = (HashMap<Date, ArrayList<MissionPlanified>>) deepClone(BS);
-					// NPL=new HashMap<Date,ArrayList<MissionPlanified>>(BS);
+					
 					tDD_NPL = (HashMap<Date, Double>) deepClone(tDD_BS);
-					// tDD_NPL=new HashMap<Date, Double>(tDD_BS);
+					
 					costNPL = costBS;
 					continue;
 				}
@@ -160,12 +153,11 @@ public class MethodReplanifiable extends CommonCalculateMethod{
 				min = costNPL - costResource;
 				// deepClone
 				finalSolution = (HashMap<Date, ArrayList<MissionPlanified>>) deepClone(NPL);
-				// finalSolution=new
-				// HashMap<Date,ArrayList<MissionPlanified>>(NPL);
+				
 				finalTDD = (HashMap<Date, Double>) deepClone(tDD_NPL);
-				// finalTDD=new HashMap<Date, Double>(tDD_NPL);
+				
 				finalMRL = (ArrayList<MissionPlanified>) deepClone(missionReplanList);
-				// finalMRL=new ArrayList<MissionPlanified>(missionReplanList);
+				
 				finalResource = r;
 			}
 

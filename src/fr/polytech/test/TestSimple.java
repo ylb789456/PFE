@@ -44,14 +44,14 @@ public class TestSimple {
 		Date dateStart=new Date();
 		Date dateEnd=new Date();
 		try {
-			dateStart=sdf.parse("2017-02-06");
-			dateEnd = sdf.parse("2017-02-10");
+			dateStart=sdf.parse("2017-02-09");
+			dateEnd = sdf.parse("2017-02-28");
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		Mission newmission=new Mission(clientsList.get(110), "plombier", dateStart, dateEnd, 80);
+		Mission newmission=new Mission(clientsList.get(210), "electricien", dateStart, dateEnd, 80);
 		System.out.println(newmission.toString());
 		MethodSimple methodSimple=new MethodSimple();
 		long startTime = System.currentTimeMillis();

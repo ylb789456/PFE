@@ -98,7 +98,7 @@ public class MethodReplanifiable extends CommonCalculateMethod{
 			// switch-loop
 			switchInMissionReplanList(missionReplanList, BS, tDD_BS);
 			costBS = calculateResourceCost(tDD_BS);
-			// System.out.println("After switch-loop cost="+costBS);
+			//System.out.println("After switch-loop cost="+costBS);
 			// insert-loop
 			do {
 				Iterator<MissionPlanified> iterator3 = missionReplanList.iterator();
@@ -155,8 +155,7 @@ public class MethodReplanifiable extends CommonCalculateMethod{
 				}
 				flag = false;
 			} while (flag);
-			// System.out.println("The extraTime after
-			// insert:"+(costNPL-costResource));
+			//System.out.println("The extraTime after insert:"+(costNPL-costResource));
 			if (costNPL - costResource < min) {
 				min = costNPL - costResource;
 				// deepClone

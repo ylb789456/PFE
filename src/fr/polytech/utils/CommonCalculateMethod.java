@@ -387,7 +387,7 @@ public class CommonCalculateMethod {
 	public void switchInMissionReplanList(ArrayList<MissionPlanified> missionReplanList,
 			HashMap<Date, ArrayList<MissionPlanified>> solutionResource,
 			HashMap<Date, Double> tDD){
-		
+		//System.out.println("In the switch loop:");
 		for(int i=0;i<missionReplanList.size();i++){
 			for(int j=i+1;j<missionReplanList.size();j++){
 				MissionPlanified m1=findMissionInPlanDailyMap(missionReplanList.get(i), solutionResource);
@@ -555,6 +555,7 @@ public class CommonCalculateMethod {
 				}	
 			}		
 		}
+		//System.out.println("Out the switch loop:");
 	}	
 	
 	

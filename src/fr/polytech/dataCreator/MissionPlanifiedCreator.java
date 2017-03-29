@@ -27,7 +27,8 @@ public class MissionPlanifiedCreator {
 	 */
 	public static void main(String[] args) throws ParseException {
 		// TODO Auto-generated method stub
-		int number = 100;
+		int number = 300;
+		int numResource=10;
 		Date dateStart;
 		Date dateEnd;
 		SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -38,10 +39,10 @@ public class MissionPlanifiedCreator {
 		int i=1;
 		while(dateM.before(dateEnd)){
 			
-			int numberResource=createNumberResource();
+			int numberResource=createNumberResource(numResource);
 			for(int j=0;j<numberResource;j++ ){
 				int[] set =new int[numberResource]; 
-				createIdResourceSet(numberResource, set);
+				createIdResourceSet(numberResource, set,numResource);
 				int idResource=set[j];
 				int timeStartWork=510;
 				for(int k=0;k<createPlanDailySize();k++){
@@ -75,9 +76,9 @@ public class MissionPlanifiedCreator {
 	 * @param number the number
 	 * @param set the set
 	 */
-	public static void createIdResourceSet(int number,int[] set){
+	public static void createIdResourceSet(int number,int[] set,int numResource){
 		for(int i=0;i<number;i++){
-			int num=1+(int)(Math.random()*9);
+			int num=1+(int)(Math.random()*numResource);
 			set[i]=num;
 		}
 	}
@@ -87,8 +88,8 @@ public class MissionPlanifiedCreator {
 	 *
 	 * @return the int
 	 */
-	public static int createNumberResource(){
-		return 4+(int)(Math.random()*6);
+	public static int createNumberResource(int numResource){
+		return 4+(int)(Math.random()*(numResource-4));
 	}
 	
 	/**

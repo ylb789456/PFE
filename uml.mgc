@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ClassDiagram>
-    <Class name="fr.polytech.model.Mission" x="826" y="241">
+    <Class name="fr.polytech.model.Mission" x="1946" y="405">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -12,7 +12,7 @@
             endpointName="client" kind="Simple"/>
         <Communication destinationClassName="fr.polytech.model.Client"/>
     </Class>
-    <Class name="fr.polytech.model.Client" x="769" y="462">
+    <Class name="fr.polytech.model.Client" x="1496" y="409">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -21,7 +21,7 @@
             default-accepted="false" static-accepted="false"
             accessors-accepted="false" constructors-accepted="false"/>
     </Class>
-    <Class name="fr.polytech.utils.MethodReplanifiable1" x="-300" y="144">
+    <Class name="fr.polytech.utils.DataLoad" x="522" y="696">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -30,22 +30,8 @@
             default-accepted="false" static-accepted="false"
             accessors-accepted="false" constructors-accepted="false"/>
         <Extension destinationClassName="fr.polytech.utils.CommonCalculateMethod"/>
-        <Communication destinationClassName="fr.polytech.model.Planning"/>
-        <Communication destinationClassName="fr.polytech.utils.CommonCalculateMethod"/>
-        <Communication destinationClassName="fr.polytech.model.MissionPlanified"/>
-        <Communication destinationClassName="fr.polytech.model.Ressource"/>
-    </Class>
-    <Class name="fr.polytech.utils.DataLoad" x="1140" y="-8">
-        <AttributesDisplayFilter public-accepted="true"
-            private-accepted="true" protected-accepted="true"
-            default-accepted="true" static-accepted="false"/>
-        <MethodDisplayFilter public-accepted="true"
-            private-accepted="false" protected-accepted="false"
-            default-accepted="false" static-accepted="false"
-            accessors-accepted="false" constructors-accepted="false"/>
-        <Extension destinationClassName="fr.polytech.utils.CommonCalculateMethod"/>
-        <Association destinationClassName="fr.polytech.model.Ressource"
-            endpointName="ressourcesList" kind="Simple"/>
+        <Association destinationClassName="fr.polytech.model.Resource"
+            endpointName="resourcesList" kind="Simple"/>
         <Association
             destinationClassName="fr.polytech.model.MissionPlanified"
             endpointName="missionPlanifiedsList" kind="Simple"/>
@@ -53,11 +39,11 @@
             endpointName="clientsList" kind="Simple"/>
         <Communication destinationClassName="fr.polytech.model.Client"/>
         <Communication destinationClassName="fr.polytech.model.Planning"/>
+        <Communication destinationClassName="fr.polytech.model.Resource"/>
         <Communication destinationClassName="fr.polytech.utils.CommonCalculateMethod"/>
         <Communication destinationClassName="fr.polytech.model.MissionPlanified"/>
-        <Communication destinationClassName="fr.polytech.model.Ressource"/>
     </Class>
-    <Class name="fr.polytech.model.Planning" x="300" y="928">
+    <Class name="fr.polytech.model.Planning" x="1896" y="760">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -69,50 +55,7 @@
             destinationClassName="fr.polytech.model.MissionPlanified"
             endpointName="missionPlanifiedsList" kind="Simple"/>
     </Class>
-    <Class name="fr.polytech.utils.CommonCalculateMethod" x="-436" y="382">
-        <AttributesDisplayFilter public-accepted="true"
-            private-accepted="true" protected-accepted="true"
-            default-accepted="true" static-accepted="false"/>
-        <MethodDisplayFilter public-accepted="true"
-            private-accepted="false" protected-accepted="false"
-            default-accepted="false" static-accepted="false"
-            accessors-accepted="false" constructors-accepted="false"/>
-        <Association destinationClassName="fr.polytech.model.Client"
-            endpointName="base" kind="Simple"/>
-        <Communication destinationClassName="fr.polytech.model.Mission"/>
-        <Communication destinationClassName="fr.polytech.model.MissionPlanified"/>
-        <Communication destinationClassName="fr.polytech.model.Ressource"/>
-    </Class>
-    <Class name="fr.polytech.model.MissionPlanified" x="880" y="730">
-        <AttributesDisplayFilter public-accepted="true"
-            private-accepted="true" protected-accepted="true"
-            default-accepted="true" static-accepted="false"/>
-        <MethodDisplayFilter public-accepted="true"
-            private-accepted="false" protected-accepted="false"
-            default-accepted="false" static-accepted="false"
-            accessors-accepted="false" constructors-accepted="false"/>
-        <Association destinationClassName="fr.polytech.model.Ressource"
-            endpointName="ressource" kind="Simple"/>
-        <Association destinationClassName="fr.polytech.model.Client"
-            endpointName="client" kind="Simple"/>
-        <Communication destinationClassName="fr.polytech.model.Client"/>
-        <Communication destinationClassName="fr.polytech.model.Ressource"/>
-    </Class>
-    <Class name="fr.polytech.utils.MethodSimple" x="232" y="146">
-        <AttributesDisplayFilter public-accepted="true"
-            private-accepted="true" protected-accepted="true"
-            default-accepted="true" static-accepted="false"/>
-        <MethodDisplayFilter public-accepted="true"
-            private-accepted="false" protected-accepted="false"
-            default-accepted="false" static-accepted="false"
-            accessors-accepted="false" constructors-accepted="false"/>
-        <Extension destinationClassName="fr.polytech.utils.CommonCalculateMethod"/>
-        <Communication destinationClassName="fr.polytech.model.Planning"/>
-        <Communication destinationClassName="fr.polytech.utils.CommonCalculateMethod"/>
-        <Communication destinationClassName="fr.polytech.model.MissionPlanified"/>
-        <Communication destinationClassName="fr.polytech.model.Ressource"/>
-    </Class>
-    <Class name="fr.polytech.model.Ressource" x="1582" y="421">
+    <Class name="fr.polytech.model.Resource" x="1342" y="972">
         <AttributesDisplayFilter public-accepted="true"
             private-accepted="true" protected-accepted="true"
             default-accepted="true" static-accepted="false"/>
@@ -123,6 +66,63 @@
         <Association
             destinationClassName="fr.polytech.model.MissionPlanified"
             endpointName="MissionReplanList" kind="Simple"/>
+        <Communication destinationClassName="fr.polytech.model.MissionPlanified"/>
+    </Class>
+    <Class name="fr.polytech.utils.CommonCalculateMethod" x="144" y="80">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association destinationClassName="fr.polytech.model.Client"
+            endpointName="base" kind="Simple"/>
+        <Communication destinationClassName="fr.polytech.model.Mission"/>
+        <Communication destinationClassName="fr.polytech.model.Resource"/>
+        <Communication destinationClassName="fr.polytech.model.MissionPlanified"/>
+    </Class>
+    <Class name="fr.polytech.utils.MethodReplanifiable" x="1482" y="248">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Extension destinationClassName="fr.polytech.utils.CommonCalculateMethod"/>
+        <Communication destinationClassName="fr.polytech.model.Planning"/>
+        <Communication destinationClassName="fr.polytech.model.Resource"/>
+        <Communication destinationClassName="fr.polytech.utils.CommonCalculateMethod"/>
+        <Communication destinationClassName="fr.polytech.model.MissionPlanified"/>
+    </Class>
+    <Class name="fr.polytech.model.MissionPlanified" x="1473" y="667">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association destinationClassName="fr.polytech.model.Resource"
+            endpointName="resource" kind="Simple"/>
+        <Association destinationClassName="fr.polytech.model.Client"
+            endpointName="client" kind="Simple"/>
+        <Communication destinationClassName="fr.polytech.model.Client"/>
+        <Communication destinationClassName="fr.polytech.model.Resource"/>
+    </Class>
+    <Class name="fr.polytech.utils.MethodSimple" x="1470" y="94">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Extension destinationClassName="fr.polytech.utils.CommonCalculateMethod"/>
+        <Communication destinationClassName="fr.polytech.model.Planning"/>
+        <Communication destinationClassName="fr.polytech.model.Resource"/>
+        <Communication destinationClassName="fr.polytech.utils.CommonCalculateMethod"/>
         <Communication destinationClassName="fr.polytech.model.MissionPlanified"/>
     </Class>
 </ClassDiagram>
